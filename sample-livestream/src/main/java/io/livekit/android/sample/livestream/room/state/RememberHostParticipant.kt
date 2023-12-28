@@ -27,7 +27,7 @@ import io.livekit.android.room.participant.Participant
  * Finds the creator of the room.
  */
 @Composable
-fun rememberHostParticipant(identity: String): Participant? {
+fun rememberHostParticipant(identity: Participant.Identity): Participant? {
     val participantInfos = rememberParticipants().associateWith { rememberParticipantInfo(it) }
 
     val hostParticipant = remember(participantInfos) {

@@ -30,7 +30,7 @@ fun DefaultRoomOptions(customizer: (RoomOptions) -> RoomOptions): RoomOptions {
         adaptiveStream = true,
         dynacast = true,
         videoTrackPublishDefaults = VideoTrackPublishDefaults(
-            videoEncoding = VideoPreset169.HD.encoding.copy(maxBitrate = 3_000_000),
+            videoEncoding = VideoPreset169.H720.encoding.copy(maxBitrate = 3_000_000),
             simulcast = true,
         )
     )

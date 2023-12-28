@@ -36,9 +36,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import io.livekit.android.compose.local.RoomLocal
+import io.livekit.android.compose.types.TrackReference
 import io.livekit.android.compose.ui.ScaleType
-import io.livekit.android.compose.ui.VideoRenderer
-import io.livekit.android.room.track.VideoTrack
+import io.livekit.android.compose.ui.VideoTrackView
 import io.livekit.android.sample.livestream.R
 import io.livekit.android.sample.livestream.ui.control.Spacer
 import io.livekit.android.sample.livestream.ui.theme.NoVideoBackground
@@ -47,7 +47,7 @@ import io.livekit.android.sample.livestream.ui.theme.NoVideoBackground
  * A video grid that adapts to layouts required for 1-N participants.
  */
 @Composable
-fun ParticipantGrid(videoTracks: List<VideoTrack?>, isHost: Boolean, modifier: Modifier = Modifier) {
+fun ParticipantGrid(videoTracks: List<TrackReference?>, isHost: Boolean, modifier: Modifier = Modifier) {
     when (videoTracks.size) {
         0 -> Box(modifier = modifier)
         1 -> SingleArrangement(videoTrack = videoTracks[0], isHost = isHost, modifier = modifier)
@@ -58,21 +58,21 @@ fun ParticipantGrid(videoTracks: List<VideoTrack?>, isHost: Boolean, modifier: M
 }
 
 @Composable
-private fun SingleArrangement(videoTrack: VideoTrack?, isHost: Boolean, modifier: Modifier) {
+private fun SingleArrangement(videoTrack: TrackReference?, isHost: Boolean, modifier: Modifier) {
     // Full screen
     VideoItem(
-        videoTrack = videoTrack,
+        trackReference = videoTrack,
         isHost = isHost,
         modifier = modifier
     )
 }
 
 @Composable
-private fun TwoArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, modifier: Modifier) {
+private fun TwoArrangement(videoTracks: List<TrackReference?>, isHost: Boolean, modifier: Modifier) {
     // Vertically two stacked.
     Column(modifier = modifier) {
         VideoItem(
-            videoTrack = videoTracks[0],
+            trackReference = videoTracks[0],
             isHost = isHost,
             modifier = Modifier
                 .fillMaxWidth()
@@ -82,7 +82,7 @@ private fun TwoArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, modi
         Spacer(8.dp)
 
         VideoItem(
-            videoTrack = videoTracks[1],
+            trackReference = videoTracks[1],
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -91,7 +91,7 @@ private fun TwoArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, modi
 }
 
 @Composable
-private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, modifier: Modifier) {
+private fun ThreeOrFourArrangement(videoTracks: List<TrackReference?>, isHost: Boolean, modifier: Modifier) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier
@@ -99,7 +99,7 @@ private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boole
                 .weight(1f)
         ) {
             VideoItem(
-                videoTrack = videoTracks[0],
+                trackReference = videoTracks[0],
                 isHost = isHost,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -109,7 +109,7 @@ private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boole
             Spacer(8.dp)
 
             VideoItem(
-                videoTrack = videoTracks[1],
+                trackReference = videoTracks[1],
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
@@ -124,7 +124,7 @@ private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boole
                 .weight(1f)
         ) {
             VideoItem(
-                videoTrack = videoTracks[2],
+                trackReference = videoTracks[2],
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
@@ -134,7 +134,7 @@ private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boole
 
             if (videoTracks.size > 3) {
                 VideoItem(
-                    videoTrack = videoTracks[3],
+                    trackReference = videoTracks[3],
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
@@ -151,7 +151,7 @@ private fun ThreeOrFourArrangement(videoTracks: List<VideoTrack?>, isHost: Boole
 }
 
 @Composable
-private fun ManyArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, modifier: Modifier) {
+private fun ManyArrangement(videoTracks: List<TrackReference?>, isHost: Boolean, modifier: Modifier) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -160,7 +160,7 @@ private fun ManyArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, mod
     ) {
         items(videoTracks.size) { index ->
             VideoItem(
-                videoTrack = videoTracks[index],
+                trackReference = videoTracks[index],
                 isHost = index == 0 && isHost,
                 modifier = Modifier.height(240.dp)
             )
@@ -169,14 +169,18 @@ private fun ManyArrangement(videoTracks: List<VideoTrack?>, isHost: Boolean, mod
 }
 
 @Composable
-fun VideoItem(videoTrack: VideoTrack?, modifier: Modifier = Modifier, isHost: Boolean = false) {
-    if (videoTrack == null) {
+fun VideoItem(trackReference: TrackReference?, modifier: Modifier = Modifier, isHost: Boolean = false) {
+    if (trackReference == null || !trackReference.isSubscribed()) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
         ) {
-            Box(modifier = Modifier.background(NoVideoBackground).fillMaxSize())
+            Box(
+                modifier = Modifier
+                    .background(NoVideoBackground)
+                    .fillMaxSize()
+            )
             Image(
                 painter = painterResource(id = R.drawable.outline_videocam_off_24),
                 contentDescription = "",
@@ -184,9 +188,9 @@ fun VideoItem(videoTrack: VideoTrack?, modifier: Modifier = Modifier, isHost: Bo
             )
         }
     } else {
-        VideoRenderer(
+        VideoTrackView(
             room = RoomLocal.current,
-            videoTrack = videoTrack,
+            trackReference = trackReference,
             mirror = isHost,
             scaleType = ScaleType.Fill,
             modifier = Modifier

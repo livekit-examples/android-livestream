@@ -51,9 +51,8 @@ import io.livekit.android.compose.chat.rememberChat
 import io.livekit.android.compose.local.HandleRoomState
 import io.livekit.android.compose.local.RoomLocal
 import io.livekit.android.compose.local.RoomScope
-import io.livekit.android.compose.local.rememberVideoTrack
-import io.livekit.android.compose.local.rememberVideoTrackPublication
 import io.livekit.android.compose.state.rememberParticipants
+import io.livekit.android.compose.state.rememberTracks
 import io.livekit.android.compose.ui.flipped
 import io.livekit.android.room.Room
 import io.livekit.android.room.RoomException
@@ -262,8 +261,8 @@ fun RoomScreen(
     showOptionsDialogOnce: MutableState<Boolean>,
     isHost: IsHost,
 ) {
-    val roomMetadata by rememberRoomMetadata()
-    val chat by rememberChat()
+    val roomMetadata = rememberRoomMetadata()
+    val chat = rememberChat()
     val scope = rememberCoroutineScope()
 
     if (showOptionsDialogOnce.value) {
@@ -279,11 +278,16 @@ fun RoomScreen(
     ) {
         val (chatLog, chatBar, hostScreen, viewerButton) = createRefs()
 
+        val tracks = rememberTracks(usePlaceholders = setOf(Track.Source.CAMERA))
         val hostParticipant = rememberHostParticipant(roomMetadata.creatorIdentity)
-        val videoParticipants = rememberOnStageParticipants(roomMetadata.creatorIdentity)
-        val participants = listOf(hostParticipant).plus(videoParticipants)
-        val videoTrackPublications = participants.map { rememberVideoTrackPublication(participant = it) }
-        val videoTracks = videoTrackPublications.map { rememberVideoTrack(videoPub = it) }
+        val hostTrack = tracks.firstOrNull { track -> track.participant == hostParticipant }
+
+        val stageParticipants = rememberOnStageParticipants(roomMetadata.creatorIdentity)
+        val stageTracks = stageParticipants.map { p ->
+            tracks.firstOrNull { track -> track.participant == p }
+        }
+
+        val videoTracks = listOf(hostTrack).plus(stageTracks)
 
         val metadatas = rememberParticipantMetadatas()
         val hasRaisedHands = if (isHost.value) {
@@ -319,9 +323,9 @@ fun RoomScreen(
             messages = chat.messages.value.mapNotNull {
                 val participantMetadata = metadatas[it.participant] ?: return@mapNotNull null
                 ChatWidgetMessage(
-                    it.participant?.identity ?: "",
+                    it.participant?.identity?.value ?: "",
                     it.message,
-                    participantMetadata.avatarImageUrlWithFallback(it.participant?.identity ?: ""),
+                    participantMetadata.avatarImageUrlWithFallback(it.participant?.identity?.value ?: ""),
                     it.timestamp,
                 )
             },

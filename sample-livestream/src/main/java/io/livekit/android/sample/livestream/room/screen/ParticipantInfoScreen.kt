@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +33,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyleBottomSheet
 import io.livekit.android.compose.local.RoomLocal
 import io.livekit.android.compose.state.rememberParticipantInfo
+import io.livekit.android.room.participant.Participant
 import io.livekit.android.sample.livestream.room.data.AuthenticatedLivestreamApi
 import io.livekit.android.sample.livestream.room.data.IdentityRequest
 import io.livekit.android.sample.livestream.room.state.rememberParticipantMetadata
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 @Destination(style = DestinationStyleBottomSheet::class)
 @Composable
 fun ParticipantInfoScreen(
-    participantSid: String,
+    participantSid: Participant.Sid,
     isHost: IsHost,
     authedApi: AuthenticatedLivestreamApi,
     coroutineScope: CoroutineScope,
@@ -61,7 +61,7 @@ fun ParticipantInfoScreen(
 ) {
     val room = RoomLocal.current
     val participant = remember(room, participantSid) {
-        room.getParticipant(participantSid)
+        room.getParticipantBySid(participantSid)
     }
 
     if (participant == null) {
@@ -69,7 +69,7 @@ fun ParticipantInfoScreen(
         return
     }
 
-    val roomMetadata by rememberRoomMetadata()
+    val roomMetadata = rememberRoomMetadata()
     val participantInfo = rememberParticipantInfo(participant)
     val participantMetadata = rememberParticipantMetadata(participant)
 
@@ -90,8 +90,8 @@ fun ParticipantInfoScreen(
         Spacer(Dimens.spacer)
 
         AvatarIcon(
-            imageUrl = participantMetadata.avatarImageUrlWithFallback(participant.identity ?: ""),
-            name = participant.identity,
+            imageUrl = participantMetadata.avatarImageUrlWithFallback(participant.identity?.value ?: ""),
+            name = participant.identity?.value ?: "",
             modifier = Modifier
                 .size(108.dp)
                 .align(Alignment.CenterHorizontally)
@@ -100,7 +100,7 @@ fun ParticipantInfoScreen(
         Spacer(8.dp)
 
         Text(
-            text = participantInfo.identity ?: "",
+            text = participantInfo.identity?.value ?: "",
             fontWeight = FontWeight.W700,
             fontSize = 14.sp,
         )

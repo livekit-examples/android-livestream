@@ -29,7 +29,6 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyleBottomSheet
-import io.livekit.android.compose.state.rememberParticipants
 import io.livekit.android.sample.livestream.destinations.ParticipantInfoScreenDestination
 import io.livekit.android.sample.livestream.room.data.AuthenticatedLivestreamApi
 import io.livekit.android.sample.livestream.room.data.IdentityRequest
@@ -85,8 +83,7 @@ fun ParticipantListScreen(
         HorizontalLine()
         Spacer(Dimens.spacer)
 
-        val roomMetadata by rememberRoomMetadata()
-        val participants = rememberParticipants()
+        val roomMetadata = rememberRoomMetadata()
         val metadatas = rememberParticipantMetadatas()
         val hostParticipant = rememberHostParticipant(roomMetadata.creatorIdentity)
 
@@ -94,7 +91,7 @@ fun ParticipantListScreen(
             .filter { (participant, metadata) -> metadata.isOnStage || participant == hostParticipant }
             .entries
             .toList()
-            .sortedBy { it.key.identity ?: "" }
+            .sortedBy { it.key.identity?.value ?: "" }
 
         // Only visible to the host.
         val requestsToJoin = if (isHost.value) {
@@ -102,7 +99,7 @@ fun ParticipantListScreen(
                 .filter { (participant, metadata) -> metadata.handRaised && !metadata.invitedToStage && !hosts.any { it.key == participant } }
                 .entries
                 .toList()
-                .sortedBy { it.key.identity ?: "" }
+                .sortedBy { it.key.identity?.value ?: "" }
         } else {
             emptyList()
         }
@@ -112,7 +109,7 @@ fun ParticipantListScreen(
             .filter { p -> !hosts.any { it == p } }
             .entries
             .toList()
-            .sortedBy { it.key.identity ?: "" }
+            .sortedBy { it.key.identity?.value ?: "" }
 
         LazyColumn {
             if (requestsToJoin.isNotEmpty()) {
@@ -130,14 +127,16 @@ fun ParticipantListScreen(
                     key = { it.key.sid }
                 ) { (participant, metadata) ->
                     ParticipantRow(
-                        name = participant.identity ?: "",
-                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity ?: ""),
+                        name = participant.identity?.value ?: "",
+                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity?.value ?: ""),
                         isRequestingToJoin = true,
                         onAllowClick = {
-                            authedApi.inviteToStage(IdentityRequest(participant.identity ?: ""))
+                            val identity = participant.identity ?: return@ParticipantRow
+                            authedApi.inviteToStage(IdentityRequest(identity))
                         },
                         onDenyClick = {
-                            authedApi.removeFromStage(IdentityRequest(participant.identity ?: ""))
+                            val identity = participant.identity ?: return@ParticipantRow
+                            authedApi.removeFromStage(IdentityRequest(identity))
                         },
                         modifier = Modifier
                             .clickable { navigator.navigate(ParticipantInfoScreenDestination(participant.sid)) }
@@ -161,8 +160,8 @@ fun ParticipantListScreen(
                     key = { it.key.sid }
                 ) { (participant, metadata) ->
                     ParticipantRow(
-                        name = participant.identity ?: "",
-                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity ?: ""),
+                        name = participant.identity?.value ?: "",
+                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity?.value ?: ""),
                         modifier = Modifier
                             .clickable { navigator.navigate(ParticipantInfoScreenDestination(participant.sid)) }
                             .animateItemPlacement()
@@ -185,8 +184,8 @@ fun ParticipantListScreen(
                     key = { it.key.sid }
                 ) { (participant, metadata) ->
                     ParticipantRow(
-                        name = participant.identity ?: "",
-                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity ?: ""),
+                        name = participant.identity?.value ?: "",
+                        imageUrl = metadata.avatarImageUrlWithFallback(participant.identity?.value ?: ""),
                         modifier = Modifier
                             .clickable { navigator.navigate(ParticipantInfoScreenDestination(participant.sid)) }
                             .animateItemPlacement()

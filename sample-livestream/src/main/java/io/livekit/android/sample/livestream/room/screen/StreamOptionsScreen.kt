@@ -29,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,7 +71,7 @@ fun StreamOptionsScreen(
     ) {
         val room = RoomLocal.current
         val roomInfo = rememberRoomInfo()
-        val roomMetadata by rememberRoomMetadata()
+        val roomMetadata = rememberRoomMetadata()
 
         val localParticipant = room.localParticipant
         val metadata = rememberParticipantMetadata(participant = localParticipant)

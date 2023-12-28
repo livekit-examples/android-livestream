@@ -16,6 +16,7 @@
 
 package io.livekit.android.sample.livestream.room.data
 
+import io.livekit.android.room.participant.Participant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import retrofit2.Response
@@ -96,5 +97,5 @@ data class ConnectionDetails(
 
 @Serializable
 data class IdentityRequest(
-    val identity: String
+    val identity: Participant.Identity
 )
