@@ -83,8 +83,11 @@ import io.livekit.android.sample.livestream.room.state.requirePermissions
 import io.livekit.android.sample.livestream.room.ui.ChatBar
 import io.livekit.android.sample.livestream.room.ui.ChatLog
 import io.livekit.android.sample.livestream.room.ui.ChatWidgetMessage
+import io.livekit.android.sample.livestream.room.ui.ConfettiState
 import io.livekit.android.sample.livestream.room.ui.ParticipantGrid
+import io.livekit.android.sample.livestream.room.ui.RoomConfettiView
 import io.livekit.android.sample.livestream.room.ui.RoomControls
+import io.livekit.android.sample.livestream.room.ui.isOneEmoji
 import io.livekit.android.sample.livestream.ui.control.LoadingDialog
 import io.livekit.android.sample.livestream.util.KeepScreenOn
 import io.livekit.android.util.flow
@@ -307,6 +310,10 @@ fun RoomScreen(
                 }
         )
 
+        // Handle reactions
+        val confettiState = remember { ConfettiState() }
+        RoomConfettiView(room = RoomLocal.current, confettiState = confettiState)
+
         // Chat overlay
         ChatLog(
             messages = chat.messages.value.mapNotNull {
@@ -329,8 +336,12 @@ fun RoomScreen(
         )
 
         ChatBar(
-            onChatSend = {
-                scope.launch { chat.send(it) }
+            onChatSend = { message ->
+                scope.launch { chat.send(message) }
+
+                if (message.isOneEmoji()) {
+                    confettiState.addParty(message)
+                }
             },
             onOptionsClick = { navigator.navigate(StreamOptionsScreenDestination()) },
             chatEnabled = roomMetadata.enableChat,
