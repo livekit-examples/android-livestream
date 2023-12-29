@@ -19,5 +19,5 @@ package io.livekit.android.sample.livestream
 object ServerInfo {
     // Source code for the backend can be found here:
     // https://github.com/livekit-examples/livestream-mobile-backend
-    val API_SERVER_URL = "https://livestream-mobile-backend.vercel.app"
+    val API_SERVER_URL = "https://livestream.livekit.io"
 }
