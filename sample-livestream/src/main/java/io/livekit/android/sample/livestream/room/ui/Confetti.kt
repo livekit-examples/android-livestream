@@ -14,7 +14,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import io.livekit.android.compose.flow.DataTopic
+import io.livekit.android.compose.chat.Chat
 import io.livekit.android.compose.flow.rememberDataMessageHandler
 import io.livekit.android.room.Room
 import nl.dionsegijn.konfetti.compose.KonfettiView
@@ -30,9 +30,8 @@ import nl.dionsegijn.konfetti.core.models.Size
 import java.util.concurrent.TimeUnit
 
 @Composable
-fun RoomConfettiView(room: Room, confettiState: ConfettiState, modifier: Modifier = Modifier) {
+fun RoomConfettiView(room: Room, chatState: Chat, confettiState: ConfettiState, modifier: Modifier = Modifier) {
     val reactionsMessageHandler = rememberDataMessageHandler(room, "reactions")
-    val chatMessageHandler = rememberDataMessageHandler(room, DataTopic.CHAT)
 
     LaunchedEffect(room) {
         reactionsMessageHandler.messageFlow.collect {
@@ -41,11 +40,10 @@ fun RoomConfettiView(room: Room, confettiState: ConfettiState, modifier: Modifie
         }
     }
 
-    LaunchedEffect(room) {
-        chatMessageHandler.messageFlow.collect {
-            val message = it.payload.decodeToString()
-            if (message.isOneEmoji()) {
-                confettiState.addParty(message)
+    LaunchedEffect(chatState) {
+        chatState.messagesFlow.collect { chatMessage ->
+            if (chatMessage.message.isOneEmoji()) {
+                confettiState.addParty(chatMessage.message)
             }
         }
     }

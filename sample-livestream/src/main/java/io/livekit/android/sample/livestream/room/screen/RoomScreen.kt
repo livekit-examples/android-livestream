@@ -312,7 +312,7 @@ fun RoomScreen(
 
         // Handle reactions
         val confettiState = remember { ConfettiState() }
-        RoomConfettiView(room = RoomLocal.current, confettiState = confettiState)
+        RoomConfettiView(room = RoomLocal.current, chatState = chat, confettiState = confettiState)
 
         // Chat overlay
         ChatLog(
@@ -338,10 +338,6 @@ fun RoomScreen(
         ChatBar(
             onChatSend = { message ->
                 scope.launch { chat.send(message) }
-
-                if (message.isOneEmoji()) {
-                    confettiState.addParty(message)
-                }
             },
             onOptionsClick = { navigator.navigate(StreamOptionsScreenDestination()) },
             chatEnabled = roomMetadata.enableChat,
