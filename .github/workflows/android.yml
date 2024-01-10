@@ -55,4 +55,4 @@ jobs:
         ./gradlew spotlessCheck
 
     - name: Build with Gradle
-      run: ./gradlew assembleRelease livekit-android-sdk:testRelease
+      run: ./gradlew assembleRelease testRelease
