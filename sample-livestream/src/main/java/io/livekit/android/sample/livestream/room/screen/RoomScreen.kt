@@ -86,7 +86,6 @@ import io.livekit.android.sample.livestream.room.ui.ConfettiState
 import io.livekit.android.sample.livestream.room.ui.ParticipantGrid
 import io.livekit.android.sample.livestream.room.ui.RoomConfettiView
 import io.livekit.android.sample.livestream.room.ui.RoomControls
-import io.livekit.android.sample.livestream.room.ui.isOneEmoji
 import io.livekit.android.sample.livestream.ui.control.LoadingDialog
 import io.livekit.android.sample.livestream.util.KeepScreenOn
 import io.livekit.android.util.flow
