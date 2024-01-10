@@ -110,6 +110,7 @@ data class IsHost(val value: Boolean)
 /**
  * A container for [RoomScreen] that sets up the needed nav host and dependencies.
  */
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Destination
 @Composable
 fun RoomScreenContainer(
