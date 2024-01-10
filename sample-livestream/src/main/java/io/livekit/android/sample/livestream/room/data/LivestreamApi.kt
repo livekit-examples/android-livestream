@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package io.livekit.android.sample.livestream.room.data
 
+import io.livekit.android.room.participant.Participant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import retrofit2.Response
@@ -96,5 +97,5 @@ data class ConnectionDetails(
 
 @Serializable
 data class IdentityRequest(
-    val identity: String
+    val identity: Participant.Identity
 )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.livekit.android.compose.ui.CameraPreview
 import io.livekit.android.compose.ui.flipped
+import io.livekit.android.room.participant.Participant
 import io.livekit.android.room.track.CameraPosition
 import io.livekit.android.sample.livestream.destinations.RoomScreenContainerDestination
 import io.livekit.android.sample.livestream.room.data.CreateStreamRequest
@@ -224,7 +225,7 @@ fun StartScreen(
                     response = livestreamApi.createStream(
                         CreateStreamRequest(
                             metadata = RoomMetadata(
-                                creatorIdentity = userName.text,
+                                creatorIdentity = Participant.Identity(userName.text),
                                 enableChat = chatEnabled,
                                 allowParticipation = viewerJoinRequestEnabled,
                             )

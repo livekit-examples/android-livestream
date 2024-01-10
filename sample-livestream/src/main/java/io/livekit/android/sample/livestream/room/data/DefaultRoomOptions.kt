@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ fun DefaultRoomOptions(customizer: (RoomOptions) -> RoomOptions): RoomOptions {
         adaptiveStream = true,
         dynacast = true,
         videoTrackPublishDefaults = VideoTrackPublishDefaults(
-            videoEncoding = VideoPreset169.HD.encoding.copy(maxBitrate = 3_000_000),
+            videoEncoding = VideoPreset169.H720.encoding.copy(maxBitrate = 3_000_000),
             simulcast = true,
         )
     )

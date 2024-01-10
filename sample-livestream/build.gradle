@@ -52,7 +52,7 @@ def coil_version = "2.4.0"
 
 dependencies {
 
-    implementation "io.livekit:livekit-android-compose-components:0.0.1-SNAPSHOT"
+    implementation "io.livekit:livekit-android-compose-components:0.0.1-20240110.112307-8"
     implementation "com.github.ajalt:timberkt:1.5.1"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")

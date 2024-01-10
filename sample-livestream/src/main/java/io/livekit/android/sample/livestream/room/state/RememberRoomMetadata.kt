@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package io.livekit.android.sample.livestream.room.state
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import io.livekit.android.compose.local.RoomLocal
+import io.livekit.android.room.participant.Participant
 import io.livekit.android.sample.livestream.room.data.ParticipantMetadata
 import io.livekit.android.sample.livestream.room.data.RoomMetadata
 import io.livekit.android.util.flow
@@ -30,7 +30,7 @@ import io.livekit.android.util.flow
  * Parses the room's metadata as [ParticipantMetadata].
  */
 @Composable
-fun rememberRoomMetadata(): State<RoomMetadata> {
+fun rememberRoomMetadata(): RoomMetadata {
     val room = RoomLocal.current
     val metadataState = room::metadata.flow
         .collectAsState()
@@ -42,12 +42,12 @@ fun rememberRoomMetadata(): State<RoomMetadata> {
                     RoomMetadata.fromJson(metadata)
                 }
                 ?: RoomMetadata(
-                    creatorIdentity = "",
+                    creatorIdentity = Participant.Identity(""),
                     enableChat = false,
                     allowParticipation = false
                 )
         }
     }
 
-    return metadata
+    return metadata.value
 }

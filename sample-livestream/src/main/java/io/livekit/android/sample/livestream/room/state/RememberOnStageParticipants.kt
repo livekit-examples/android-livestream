@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import io.livekit.android.sample.livestream.room.data.ParticipantMetadata
  * Finds all onstage participants.
  */
 @Composable
-fun rememberOnStageParticipants(hostIdentity: String): List<Participant> {
+fun rememberOnStageParticipants(hostIdentity: Participant.Identity): List<Participant> {
     val metadatas = rememberParticipantMetadatas()
 
     return remember(metadatas) {
@@ -34,7 +34,7 @@ fun rememberOnStageParticipants(hostIdentity: String): List<Participant> {
             return@derivedStateOf metadatas
                 .filter<Participant, ParticipantMetadata> { (participant, metadata) -> metadata.isOnStage && participant.identity != hostIdentity }
                 .keys
-                .sortedBy<Participant, String> { it.identity ?: "" }
+                .sortedBy<Participant, String> { it.identity?.value ?: "" }
         }
     }.value
 }

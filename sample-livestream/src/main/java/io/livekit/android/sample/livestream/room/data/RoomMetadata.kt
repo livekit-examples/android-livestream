@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 LiveKit, Inc.
+ * Copyright 2023-2024 LiveKit, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package io.livekit.android.sample.livestream.room.data
 
+import io.livekit.android.room.participant.Participant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -24,7 +25,7 @@ import kotlinx.serialization.encodeToString
 @Serializable
 data class RoomMetadata(
     @SerialName("creator_identity")
-    val creatorIdentity: String,
+    val creatorIdentity: Participant.Identity,
     @SerialName("enable_chat")
     val enableChat: Boolean,
     @SerialName("allow_participant")
