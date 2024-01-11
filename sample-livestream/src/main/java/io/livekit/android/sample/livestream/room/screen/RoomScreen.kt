@@ -282,14 +282,18 @@ fun RoomScreen(
         val hostParticipant = rememberHostParticipant(roomMetadata.creatorIdentity)
         val hostTrack = tracks.firstOrNull { track -> track.participant == hostParticipant }
 
+        // Get all the tracks for all the other participants.
         val stageParticipants = rememberOnStageParticipants(roomMetadata.creatorIdentity)
         val stageTracks = stageParticipants.map { p ->
             tracks.firstOrNull { track -> track.participant == p }
         }
 
+        // Prioritize the host to the top.
         val videoTracks = listOf(hostTrack).plus(stageTracks)
 
         val metadatas = rememberParticipantMetadatas()
+
+        // Keep track of whether any viewers want to come to the stage.
         val hasRaisedHands = if (isHost.value) {
             remember(metadatas) {
                 metadatas.any { (_, metadata) ->
@@ -383,6 +387,9 @@ fun RoomScreen(
     LoadingDialog(isShowingDialog = !isConnected)
 }
 
+/**
+ * A handler to pop a dialog when we've been invited to the stage.
+ */
 @Composable
 fun HandleInvitedToStage(navigator: DestinationsNavigator) {
     val room = RoomLocal.current
