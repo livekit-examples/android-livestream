@@ -93,7 +93,7 @@ fun StreamOptionsScreen(
             color = Color.White
         )
         Spacer(8.dp)
-        TextWithCopyButton(text = roomInfo.name.value ?: "")
+        TextWithCopyButton(text = roomInfo.name ?: "")
 
         Spacer(Dimens.spacer)
         HorizontalLine()
