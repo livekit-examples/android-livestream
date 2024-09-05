@@ -4,4 +4,4 @@
 
 This is a demo app for livestreaming using LiveKit. One user is a broadcaster while other users can view their stream and chat, as well as join the stream as a host.
 
-This sample app is based on [LiveKit Android Components](https://github.com/livekit/components-android), which allows developers to quickly get their Compose app up and running. The backend code for this app can be found [here](https://github.com/livekit-examples/livestream-mobile-backend).
+This sample app is based on [LiveKit Android Components](https://github.com/livekit/components-android), which allows developers to quickly get their Compose app up and running. The backend code for this app can be found [here](https://github.com/livekit-examples/livestream).
