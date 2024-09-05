@@ -65,7 +65,7 @@ dependencies {
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.9.42-beta'
     implementation "androidx.navigation:navigation-compose:2.6.0"
 
-    implementation "com.google.accompanist:accompanist-permissions:0.30.1"
+    implementation "com.google.accompanist:accompanist-permissions:0.36.0"
 
     implementation platform("io.coil-kt:coil-bom:$coil_version")
     implementation "io.coil-kt:coil"
