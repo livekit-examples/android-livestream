@@ -24,7 +24,7 @@ jobs:
         working-directory: ./android-livestream
     steps:
     - name: checkout android-livestream
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.2.0
       with:
         path: ./android-livestream
         submodules: recursive
